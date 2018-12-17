@@ -18,7 +18,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/product")
-public class ProductController {
+public class ProductController extends AbstractController {
     private final ProductService productService;
 
     @Autowired
