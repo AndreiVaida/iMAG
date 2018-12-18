@@ -15,6 +15,7 @@ import service.ProductService;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/product")
@@ -27,8 +28,8 @@ public class ProductController extends AbstractController {
     }
 
     @GetMapping
-    public List<Product> getAll() {
-        return productService.getAll();
+    public ResponseEntity<List<Product>> getAll() {
+        return new ResponseEntity<>(productService.getAll(), OK);
     }
 
     @PostMapping
