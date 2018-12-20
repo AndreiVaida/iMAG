@@ -27,4 +27,10 @@ public class Product {
     @Column(name = "PRICE")
     private Double price;
 
+    @Column(name = "DETAILS")
+    private String details;
+
+    @Column(name = "IMAGE")
+    private byte[] image;
+
 }

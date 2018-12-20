@@ -1,11 +1,10 @@
 package controller;
 
-import domain.Product;
 import dto.ProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,13 +27,19 @@ public class ProductController extends AbstractController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
+    public ResponseEntity<List<ProductDto>> getAll() {
         return new ResponseEntity<>(productService.getAll(), OK);
     }
 
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<?> addProduct(@RequestBody final ProductDto productDto) {
         productService.addProduct(productDto);
         return new ResponseEntity<>(null, CREATED);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getById(@PathVariable final Integer id) {
+        return new ResponseEntity<>(productService.get(id), OK);
+    }
+
 }

@@ -9,6 +9,7 @@ import repository.ProductRepository;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -20,8 +21,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAll() {
-        return productRepository.findAll();
+    public List<ProductDto> getAll() {
+        return productRepository.findAll().stream().map(ProductConverter::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -35,4 +36,5 @@ public class ProductServiceImpl implements ProductService {
         final Product product = ProductConverter.toEntity(productDto);
         productRepository.save(product);
     }
+
 }
