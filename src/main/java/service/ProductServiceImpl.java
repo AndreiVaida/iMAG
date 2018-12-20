@@ -22,7 +22,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getAll() {
-        return productRepository.findAll().stream().map(ProductConverter::toDto).collect(Collectors.toList());
+        return productRepository.findAll()
+                .stream()
+                .map(ProductConverter::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
