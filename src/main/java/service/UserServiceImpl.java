@@ -28,9 +28,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDto userDto) {
+    public User createUser(UserDto userDto) {
         final User user = UserConverter.toEntity(userDto);
         userRepository.save(user);
+        return user;
     }
 
     @Override
