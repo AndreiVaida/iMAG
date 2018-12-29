@@ -10,6 +10,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
@@ -34,7 +35,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(UserDto userDto) {
         final User user = UserConverter.toEntity(userDto);
-        userRepository.save(user);
+        try {
+            userRepository.save(user);
+        }
+        catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityViolationException("This user already exists.");
+        }
         return user;
     }
 

@@ -25,7 +25,7 @@ public abstract class AbstractController {
             return new ResponseEntity<>(e.getMessage(), CONFLICT);
         }
         if (e instanceof AuthenticationException) {
-            return new ResponseEntity<>(e, UNAUTHORIZED);
+            return new ResponseEntity<>(e.getMessage(), UNAUTHORIZED);
         }
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }

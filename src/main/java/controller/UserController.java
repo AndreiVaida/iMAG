@@ -1,5 +1,6 @@
 package controller;
 
+import converter.UserConverter;
 import domain.User;
 import dto.UserDto;
 import dto.UserLoginRequestDto;
@@ -8,6 +9,7 @@ import dto.WishlistDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,10 +37,10 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody final UserDto userDto) {
+    public ResponseEntity<UserDto> register(@RequestBody @Validated final UserDto userDto) {
         final User user = userService.createUser(userDto);
         wishlistService.createWishlist(user.getId());
-        return new ResponseEntity<>(null, CREATED);
+        return new ResponseEntity<>(UserConverter.toDto(user), CREATED);
     }
 
     @PostMapping("/login")
