@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
 
         // return a token
         final String token = generateToken(user);
-        return new UserLoginResponseDto(token);
+        return new UserLoginResponseDto(token, user.getId());
     }
 
     private String generateToken(final User user) {
