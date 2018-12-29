@@ -5,6 +5,8 @@ import domain.User;
 import dto.UserDto;
 import dto.UserLoginRequestDto;
 import dto.UserLoginResponseDto;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +15,16 @@ import repository.UserRepository;
 
 import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
+import javax.xml.bind.ValidationException;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
     private final static long HOUR = 3600 * 1000; // 1 hour in milliseconds
     private final static String SECRET_KEY = "abc";
+    private final UserRepository userRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -56,7 +60,6 @@ public class UserServiceImpl implements UserService {
 
         return Jwts.builder()
                 .claim("userId", user.getId())
-                .claim("userEmail", user.getEmail())
                 .setExpiration(expirationDate)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8))
                 .compact();
@@ -68,6 +71,28 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(EntityNotFoundException::new);
 
         return UserConverter.toDto(user);
+    }
+
+    @Override
+    public Integer validate(final String token) throws ValidationException, UnsupportedEncodingException {
+        // check secret key
+        final Jws<Claims> claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY.getBytes("UTF-8"))
+                .parseClaimsJws(token);
+
+        // check expiration date
+        final Date expirationDate = claims.getBody().getExpiration();
+        if (expirationDate.before(new Date())) {
+            throw new ValidationException("Sesiunea a expirat.");
+        }
+
+        // check claims
+        final Integer userId = (Integer) claims.getBody().get("userId");
+        if (userId == null) {
+            throw new ValidationException("Token invalid.");
+        }
+
+        return userId;
     }
 
 }
