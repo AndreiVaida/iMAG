@@ -5,19 +5,22 @@ import domain.User;
 import dto.UserDto;
 import dto.UserLoginRequestDto;
 import dto.UserLoginResponseDto;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
 import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final static long HOUR = 3600 * 1000; // 1 hour in milliseconds
+    private final static String SECRET_KEY = "abc";
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -37,14 +40,25 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new EntityNotFoundException();
         }
-        // check the pasword
+        // check the password
         if (!user.getPassword().equals(userLoginRequestDto.getPassword())) {
             throw new AuthenticationException();
         }
 
         // return a token
-        final String token = sha256(user.getId() + "," + user.getEmail() + "," + user.getPassword());
+        final String token = generateToken(user);
         return new UserLoginResponseDto(token);
+    }
+
+    private String generateToken(final User user) {
+        final Date expirationDate = new Date(new Date().getTime() + 12 * HOUR);
+
+        return Jwts.builder()
+                .claim("userId", user.getId())
+                .claim("userEmail", user.getEmail())
+                .setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8))
+                .compact();
     }
 
     @Override
@@ -55,24 +69,4 @@ public class UserServiceImpl implements UserService {
         return UserConverter.toDto(user);
     }
 
-    private String sha256(final String base) {
-        final String salt = "mySecretPassword";
-        final String stringToEncode = base + "." + salt;
-        try{
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hash = digest.digest(stringToEncode.getBytes("UTF-8"));
-            final StringBuffer hexString = new StringBuffer();
-
-            for (int i = 0; i < hash.length; i++) {
-                String hex = Integer.toHexString(0xff & hash[i]);
-                if(hex.length() == 1) hexString.append('0');
-                hexString.append(hex);
-            }
-
-            return hexString.toString();
-
-        } catch(NoSuchAlgorithmException | UnsupportedEncodingException e){
-            throw new RuntimeException(e);
-        }
-    }
 }

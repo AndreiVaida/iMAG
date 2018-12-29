@@ -1,10 +1,12 @@
 package dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @AllArgsConstructor
-@Getter
+@Data
 public class UserLoginRequestDto {
     private String email;
     private String password;
