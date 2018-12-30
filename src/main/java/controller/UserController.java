@@ -37,10 +37,10 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@RequestBody @Validated final UserDto userDto) {
+    public ResponseEntity<?> register(@RequestBody @Validated final UserDto userDto) {
         final User user = userService.createUser(userDto);
         wishlistService.createWishlist(user.getId());
-        return new ResponseEntity<>(UserConverter.toDto(user), CREATED);
+        return new ResponseEntity<>(null, CREATED);
     }
 
     @PostMapping("/login")
