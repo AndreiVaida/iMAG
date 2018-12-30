@@ -7,6 +7,7 @@ import dto.ProductDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import repository.ProductRepository;
 
@@ -44,12 +45,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public PageDto<ProductDto> getPaginated(final Integer pageNumber, final Integer itemsPerPage) {
-        final Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNumber - 1, itemsPerPage));
+    public PageDto<ProductDto> getPaginatedSortedByName(final Integer pageNumber, final Integer itemsPerPage) {
+        final Page<Product> productPage = productRepository.findAll(PageRequest.of(pageNumber - 1, itemsPerPage, Sort.by("name")));
         final List<ProductDto> productDtos = productPage.stream()
                 .map(ProductConverter::toDto)
                 .collect(Collectors.toList());
         return new PageDto<>(pageNumber, itemsPerPage, productPage.getTotalPages(), productDtos);
+    }
+
+    @Override
+    public void saveProductImage(final Integer productId, final byte[] bytes) {
+        final Product product = productRepository.findById(productId)
+                .orElseThrow(EntityNotFoundException::new);
+
+        product.setImage(bytes);
+        productRepository.save(product);
     }
 
 }

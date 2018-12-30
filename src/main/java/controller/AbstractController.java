@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import javax.naming.AuthenticationException;
 import javax.persistence.EntityNotFoundException;
 
+import java.io.IOException;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -26,6 +29,9 @@ public abstract class AbstractController {
         }
         if (e instanceof AuthenticationException) {
             return new ResponseEntity<>(e.getMessage(), UNAUTHORIZED);
+        }
+        if (e instanceof IOException) {
+            return new ResponseEntity<>(e.getMessage(), BAD_REQUEST);
         }
         return new ResponseEntity<>(e.getMessage(), INTERNAL_SERVER_ERROR);
     }

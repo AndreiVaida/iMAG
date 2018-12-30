@@ -12,5 +12,7 @@ public interface ProductService {
 
     void addProduct(final ProductDto product);
 
-    PageDto<ProductDto> getPaginated(final Integer pageNumber, final Integer itemsPerPage);
+    PageDto<ProductDto> getPaginatedSortedByName(final Integer pageNumber, final Integer itemsPerPage);
+
+    void saveProductImage(final Integer productId, final byte[] bytes);
 }
