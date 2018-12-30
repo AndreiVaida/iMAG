@@ -56,13 +56,13 @@ public class UserController extends AbstractController {
     }
 
     @PostMapping("/wishlist")
-    public ResponseEntity<?> addWishlistProduct(@RequestHeader final Integer userId, @RequestBody final Integer productId) {
+    public ResponseEntity<?> addWishlistProduct(@RequestHeader final Integer userId, @RequestHeader final Integer productId) {
         wishlistService.addWishlistProduct(userId, productId);
         return new ResponseEntity<>(null, OK);
     }
 
     @DeleteMapping("/wishlist")
-    public ResponseEntity<?> removeWishlistProduct(@RequestHeader final Integer userId, @RequestBody final Integer productId) {
+    public ResponseEntity<?> removeWishlistProduct(@RequestHeader final Integer userId, @RequestHeader final Integer productId) {
         wishlistService.removeWishlistProduct(userId, productId);
         return new ResponseEntity<>(null, OK);
     }
