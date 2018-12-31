@@ -37,10 +37,14 @@ public class UserConverter {
     }
 
     private static LocalDate stringToLocalDate(final String stringDate) {
-        final String[] dateParts = stringDate.split("\\.");
-        final int year = Integer.parseInt(dateParts[0]);
-        final int month = Integer.parseInt(dateParts[1]);
-        final int day = Integer.parseInt(dateParts[2]);
-        return LocalDate.of(year, month, day);
+        try {
+            final String[] dateParts = stringDate.split("\\.");
+            final int year = Integer.parseInt(dateParts[0]);
+            final int month = Integer.parseInt(dateParts[1]);
+            final int day = Integer.parseInt(dateParts[2]);
+            return LocalDate.of(year, month, day);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

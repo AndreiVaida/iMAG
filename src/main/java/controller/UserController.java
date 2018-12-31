@@ -20,6 +20,7 @@ import service.UserService;
 import service.WishlistService;
 
 import javax.naming.AuthenticationException;
+import javax.transaction.Transactional;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -38,9 +39,14 @@ public class UserController extends AbstractController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Validated final UserDto userDto) {
+        createUserAndWishlist(userDto);
+        return new ResponseEntity<>(null, CREATED);
+    }
+
+    @Transactional
+    void createUserAndWishlist(@Validated @RequestBody UserDto userDto) {
         final User user = userService.createUser(userDto);
         wishlistService.createWishlist(user.getId());
-        return new ResponseEntity<>(null, CREATED);
     }
 
     @PostMapping("/login")
