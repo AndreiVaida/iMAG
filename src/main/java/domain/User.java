@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,4 +28,7 @@ public class User {
 
     @Column(name = "NAME")
     private String name;
+
+    @Column(name = "BIRTH_DAY")
+    private LocalDate birthDay;
 }

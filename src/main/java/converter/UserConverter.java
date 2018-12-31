@@ -3,6 +3,8 @@ package converter;
 import domain.User;
 import dto.UserDto;
 
+import java.time.LocalDate;
+
 public class UserConverter {
     private UserConverter() {}
 
@@ -12,6 +14,9 @@ public class UserConverter {
         userDto.setEmail(user.getEmail());
         userDto.setName(user.getName());
         userDto.setPassword(user.getPassword());
+        if (userDto.getBirthDay() != null) {
+            userDto.setBirthDay(localDateToString(user.getBirthDay()));
+        }
         return userDto;
     }
 
@@ -21,6 +26,21 @@ public class UserConverter {
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());
         user.setPassword(userDto.getPassword());
+        if (userDto.getBirthDay() != null) {
+            user.setBirthDay(stringToLocalDate(userDto.getBirthDay()));
+        }
         return user;
+    }
+
+    private static String localDateToString(final LocalDate localDate) {
+        return localDate.getYear() + "." + localDate.getMonth() + "." + localDate.getDayOfMonth();
+    }
+
+    private static LocalDate stringToLocalDate(final String stringDate) {
+        final String[] dateParts = stringDate.split("\\.");
+        final int year = Integer.parseInt(dateParts[0]);
+        final int month = Integer.parseInt(dateParts[1]);
+        final int day = Integer.parseInt(dateParts[2]);
+        return LocalDate.of(year, month, day);
     }
 }

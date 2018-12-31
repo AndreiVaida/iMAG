@@ -7,6 +7,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,4 +26,6 @@ public class UserDto {
     @NotNull
     @Length(min = 1)
     private String password;
+
+    private String birthDay;
 }
